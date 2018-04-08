@@ -26,6 +26,7 @@ class Emulator(object):
             cwd = os.getcwd()
             os.chdir(BINDIR)
             result = func(self, *args, **kwargs)
+            # TODO: if exception raised during func, it won't restore to cwd
             os.chdir(cwd)
             return result
         return wrapper
@@ -74,6 +75,7 @@ class Emulator(object):
     def stop(self, save_on_exit=False):
         if not self._process:
             raise Exception("Cannot stop emulator, haven't started")
+        # TODO: this way of killing could cause many problems like leaving lock file behind
         if not save_on_exit:
             self._process.kill()
         else:
@@ -110,10 +112,20 @@ class Emulator(object):
         raise Exception('Failed to get port for emulator with name: {}'.format(self.name))
 
     @property
+    @_chdir
+    def _adb_state(self):
+        cmd = "../platform-tools/adb -s emulator-{} get-state".format(self.port)
+        p = subprocess.Popen(cmd, shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+        out, err = p.communicate()
+        return out[:-1]
+
+
+    @property
     def status(self):
+        # TODO: when divice is on but not started from script, this won't work
         if not self._process:
             return 'off'
-        if ConsoleController(self.port).ping():
+        if ConsoleController(self.port).ping() and self._adb_state == 'device':
             return 'on'
         else:
             return 'limbo'

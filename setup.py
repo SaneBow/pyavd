@@ -8,7 +8,7 @@ setup(
     author='WANG Xianbo',
     author_email='sanebow@gmail.com',
     url='https://github.com/sanebow/pyavd',
-    download_url='https://github.com/sanebow/pyavd/archive/0.1.tar.gz',
+    download_url='https://github.com/SaneBow/pyavd/archive/0.1.tar.gz',
     keywords=['avd', 'android', 'emulator', 'snapshot'],
     classifiers=[],
 )
