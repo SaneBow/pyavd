@@ -1,2 +1,2 @@
 # pyavd
-Lightweight Python library for controlling Android Emulator
+A lightweight Python library for controlling Android Emulator
